@@ -1,0 +1,62 @@
+File: src/main.ts
+Function Name: bootstrap
+Function Body:
+async function bootstrap() {
+  const serverConfig = config.get('server');
+  const logger = new Logger('bootstrap');
+  const app = await NestFactory.create(AppModule);
+
+  if (process.env.NODE_ENV === 'development') {
+    app.enableCors();
+  } else {
+    app.enableCors({ origin: serverConfig.origin });
+    logger.log(`Accepting requests from origin "${serverConfig.origin}"`);
+  }
+
+  const port = process.env.PORT || serverConfig.port;
+  await app.listen(port);
+  logger.log(`Application listening on port ${port}`);
+}
+
+File: test/app.e2e-spec.ts
+Function Name: anonymous
+Function Body:
+() => {
+  let app;
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
+
+  it('/ (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('Hello World!');
+  });
+}
+
+Function Name: anonymous
+Function Body:
+async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  }
+
+Function Name: anonymous
+Function Body:
+() => {
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('Hello World!');
+  }
